@@ -1,0 +1,56 @@
+{%extends 'base.html'%}
+{%block title%}Juegos Panamericanos{%endblock%}
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/tablas.css')}}">
+{% endblock %}
+{%block content%}
+<div class="centered">
+  <h1 class="centered">Hinchas</h1>
+</div>
+<div class="centered">
+  <table class="display-table" style="width:50%">
+  <tr>
+    <th>Nombre</th>
+    <th>Comuna</th>
+    <th>Deportes</th>
+    <th>Modo Transporte</th>
+    <th>Número celular</th>
+  </tr>
+  <tr onclick="window.location='informacion-hinchas.html';">
+    <td>Luis Fonsi</td>
+    <td>Colina</td>
+    <td>Skateboarding, Judo, Taekwondo</td>
+    <td>Particular</td>
+    <td>+(569)9082098</td>
+  </tr>
+  <tr onclick="window.location='informacion-hinchas.html';">
+    <td>Luis Fonsi</td>
+    <td>Colina</td>
+    <td>Skateboarding, Judo, Taekwondo</td>
+    <td>Particular</td>
+    <td>+(569)9082098</td>
+  </tr>
+  <tr onclick="window.location='informacion-hinchas.html';">
+    <td>Luis Fonsi</td>
+    <td>Colina</td>
+    <td>Skateboarding, Judo, Taekwondo</td>
+    <td>Particular</td>
+    <td>+(569)9082098</td>
+  </tr>
+  <tr onclick="window.location='informacion-hinchas.html';">
+    <td>Luis Fonsi</td>
+    <td>Colina</td>
+    <td>Skateboarding, Judo, Taekwondo</td>
+    <td>Particular</td>
+    <td>+(569)9082098</td>
+  </tr>
+  <tr onclick="window.location='informacion-hinchas.html';">
+    <td>Luis Fonsi</td>
+    <td>Colina</td>
+    <td>Skateboarding, Judo, Taekwondo</td>
+    <td>Particular</td>
+    <td>+(569)9082098</td>
+  </tr>
+  </table>
+</div>
+{%endblock%}

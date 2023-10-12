@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{%block title%}Juegos Panamericanos{%endblock%}
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/fotos.css')}}">
+{% endblock %}
+{%block content%}
+{%for artesano in artesanos%}
+<div class="centered">
+    <h1 class="centered">Artesania {{artesano.nombre}}</h1>
+</div>
+<div class="info">
+    <div class="left-info">
+        <p class="text-large">comuna: {{artesano.comuna}}</p>
+        <p class="text-large">Tipo:{{artesano.tipo_artesanias}}</p>
+        <p class="text-large">Telefono: {{artesano.telefono}}</p>
+      </div>
+      <div class="right-info">
+        {%for path in artesano.path_images%}
+        {% set unique_id = 'img' + loop.index|string %}
+        <img src="{{path}}" alt="Imagen" id="{{unique_id}}" width="640" height="480" onclick="expandImg('{{unique_id}}')">
+        {%endfor%}
+    </div>
+    
+    
+    
+</div>
+<div class="centered">
+    <button type="button" onclick="window.location='/ver_artesanos';">Volver a Artesanos</button>
+</div>
+{%endfor%}
+{%endblock%}
+{% block js %}
+    <script src="{{url_for('static', filename='js/Imagen.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{%extends 'base.html'%}
+{%block title%}Juegos Panamericanos{%endblock%}
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/form.css')}}">
+{% endblock %}
+{%block content%}
+<form>
+  <div class="form-group" id="form-group">
+    <h2>Registrar hincha</h2>
+
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" placeholder="Ingrese su nombre">
+      <label for="email">Email Contacto</label>
+      <input type="text" id="email" placeholder="Ingrese su email">
+      <label for="telefono">Teléfono</label>
+      <input type="text" id="telefono" placeholder="Ingrese su teléfono">
+      <label for="transporte">Modo de transporte</label>
+      <select name="Transporte" id="transporte">
+          <option value="" selected disabled hidden>Seleccione modo de transporte</option>
+          <option value="particular">particular</option>
+          <option value="locomoción pública">locomoción pública</option>
+      </select>
+      <label for="region">Región</label>
+      <select id="region" required>
+        <option value="" selected disabled hidden>Seleccione región</option>
+      </select>
+      <label for="comuna">Comuna</label>
+      <select id="comuna" required>
+        <option value="" selected disabled hidden>Ingrese Comuna</option>
+      </select>
+
+      <label for="sports">Deporte(s) que interesa apoyar</label>
+      <select name="sports" id="sports" multiple>
+        <option value="1">Clavados</option>
+        <option value="2">Natación</option>
+        <option value="3">Natación artística</option>
+        <option value="4">Polo acuático</option>
+        <option value="5">Natación en Aguas abiertas</option>
+        <option value="6">Maratón</option>
+        <option value="7">Marcha</option>
+        <option value="8">Atletismo</option>
+        <option value="9">Bádminton</option>
+        <option value="10">Balonmano</option>
+        <option value="11">Básquetbol</option>
+        <option value="12">Básquetbol 3x3</option>
+        <option value="13">Béisbol</option>
+        <option value="14">Boxeo</option>
+        <option value="15">Bowling</option>
+        <option value="16">Breaking</option>
+        <option value="17">Canotaje Slalom</option>
+        <option value="18">Canotaje de velocidad</option>
+        <option value="19">BMX Freestyle</option>
+        <option value="20">BMX Racing</option>
+        <option value="21">Mountain Bike</option>
+        <option value="22">Ciclismo pista</option>
+        <option value="23">Ciclismo ruta</option>
+        <option value="24">Adiestramiento ecuestre</option>
+        <option value="25">Evento completo ecuestre</option>
+        <option value="26">Salto ecuestre</option>
+        <option value="27">Escalada deportiva</option>
+        <option value="28">Esgrima</option>
+        <option value="29">Esquí acuático y Wakeboard</option>
+        <option value="30">Fútbol</option>
+        <option value="31">Gimnasia artística Masculina</option>
+        <option value="32">Gimnasia artística Femenina</option>
+        <option value="33">Gimnasia rítmica</option>
+        <option value="34">Gimnasia trampolín</option>
+        <option value="35">Golf</option>
+        <option value="36">Hockey césped</option>
+        <option value="37">Judo</option>
+        <option value="38">Karate</option>
+        <option value="39">Levantamiento de pesas</option>
+        <option value="40">Lucha</option>
+        <option value="41">Patinaje artístico</option>
+        <option value="42">Skateboarding</option>
+        <option value="43">Patinaje velocidad</option>
+        <option value="44">Pelota vasca</option>
+        <option value="45">Pentatlón moderno</option>
+        <option value="46">Racquetball</option>
+        <option value="47">Remo</option>
+        <option value="48">Rugby 7</option>
+        <option value="49">Sóftbol</option>
+        <option value="50">Squash</option>
+        <option value="51">Surf</option>
+        <option value="52">Taekwondo</option>
+        <option value="53">Tenis</option>
+        <option value="54">Tenis de mesa</option>
+        <option value="55">Tiro</option>
+        <option value="56">Tiro con arco</option>
+        <option value="57">Triatlón</option>
+        <option value="58">Vela</option>
+        <option value="59">Vóleibol</option>
+        <option value="60">Vóleibol playa</option>                  
+    </select>
+      <label for="descripcion">Comentarios Adicionales</label>
+      <input id="descripcion" type="text" maxlength="80" placeholder="Ingrese su Comentarios Adicional">
+      <button id="submit-button" type="button">Agregar hincha</button>
+  </div>
+</form>
+<div id="val-box" hidden>
+<ul id="val-msg"></ul>
+<ul id="val-list"></ul>
+</div>
+<div id="confirm-box" class="static-centered" hidden>
+<h1 class="centered">¿Confirma que desea agregar este Hincha?</h1>
+<div class="centered">
+  <button id="confirm-button" type="button">Sí, confirmo</button>
+  <button id="deny-button" type="button">No, quiero volver al formulario.</button>
+</div>
+</div>
+<div id="return-box" class="static-centered" hidden>
+<h1 class="centered">Hemos recibido la información de su Hincha. Muchas gracias.</h1>
+<div class="centered">
+  <a href="{{url_for('index')}}">Volver al Inicio</a>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="{{url_for('static', filename='js/validatorH.js')}}"></script>
+{%endblock%}
