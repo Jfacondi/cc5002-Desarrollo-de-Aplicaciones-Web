@@ -101,3 +101,18 @@ nav{
     font-size: 14px;
     color: #fff;
 }
+.succes{
+    color: lightgoldenrodyellow;
+    font-size: 30px;
+    font-weight: 900;
+    text-align: center;
+    margin-top: 0px;
+}
+
+.error{
+    color: #cc0000;
+    font-size: 40px;
+    font-weight: 900;
+    text-align: center;
+    margin-top: 0px;
+}

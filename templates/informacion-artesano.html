@@ -6,13 +6,24 @@
 {%block content%}
 {%for artesano in artesanos%}
 <div class="centered">
-    <h1 class="centered">Artesania {{artesano.nombre}}</h1>
+    <h1 class="centered">Artesania de {{artesano.nombre}}</h1>
 </div>
 <div class="info">
     <div class="left-info">
+        <p class="text-large">region: {{artesano.region}}</p>
         <p class="text-large">comuna: {{artesano.comuna}}</p>
         <p class="text-large">Tipo:{{artesano.tipo_artesanias}}</p>
+        {%if artesano.telefono == ''%}
+        <p class="text-large">Telefono: No brinda telefono</p>
+        {%elif artesano.telefono is not none%}
         <p class="text-large">Telefono: {{artesano.telefono}}</p>
+        {%endif%}
+        <p class="text-large">Correo: {{artesano.email}}</p>
+        {%if artesano.descripcion == ''%}
+        <p class="text-large">Descripcion: No brinda descripcion</p>
+        {%elif artesano.descripcion is not none%}
+        <p class="text-large">Descripcion: {{artesano.descripcion}}</p>
+        {%endif%}
       </div>
       <div class="right-info">
         {%for path in artesano.path_images%}
@@ -20,9 +31,6 @@
         <img src="{{path}}" alt="Imagen" id="{{unique_id}}" width="640" height="480" onclick="expandImg('{{unique_id}}')">
         {%endfor%}
     </div>
-    
-    
-    
 </div>
 <div class="centered">
     <button type="button" onclick="window.location='/ver_artesanos';">Volver a Artesanos</button>

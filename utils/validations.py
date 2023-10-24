@@ -1,5 +1,6 @@
 import re
 import filetype
+import sys
 
 def validate_conf_img(conf_img):
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
@@ -33,7 +34,7 @@ def validate_tipos(value):
     return True
 
 def validate_nombre(value):
-    if len(value) == 0:
+    if len(value) < 3:
         return False
     if len(value) > 80:
         return False
@@ -42,7 +43,7 @@ def validate_nombre(value):
 def validate_email(value):
     if len(value) == 0:
         return False
-    if len(value) > 80:
+    if len(value) > 30:
         return False
     if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
         return False
@@ -50,14 +51,14 @@ def validate_email(value):
 
 def validate_telefono(value):
     if len(value) == 0:
-        return False
+        return True
     if len(value) > 15:
         return False
     if not re.match(r"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$", value):
         return False
     return True
 
-def validate_comuna(value):
+def validate_comuna(value, value2):
     if len(value) == 0:
         return False
     if int(value) < 10101 or int(value) > 130606:
@@ -71,26 +72,30 @@ def validate_region(value):
     return True
 
 def validate_descripcion(value):
-    if len(value) > 300:
+    if len(value) > 80:
         return False
     return True
 
 def validate_artesano(nombre,email,telefono,comuna,region,artesania,descripcion):
+    msg=""
     if not validate_nombre(nombre):
-        return False
+        msg=msg+"Nombre invalido "
     if not validate_email(email):
-        return False
+        msg=msg+"Email invalido "
     if not validate_telefono(telefono):
-        return False
-    if not validate_comuna(comuna):
-        return False
+        msg=msg+"Telefono invalido "
+    if not validate_comuna(comuna,region):
+        msg=msg+"Comuna invalida "
     if not validate_region(region):
-        return False
+        msg=msg+"Region invalida "
     if not validate_tipos(artesania):
-        return False
+        msg=msg+"Tipo de artesania invalida "
     if not validate_descripcion(descripcion):
-        return False
-    return True
+        msg=msg+"Descripcion invalida "
+    if msg=="":
+        return True, msg
+    else:
+        return False, msg
 def validate_fotos(foto):
     if validate_conf_img(foto):
         return True

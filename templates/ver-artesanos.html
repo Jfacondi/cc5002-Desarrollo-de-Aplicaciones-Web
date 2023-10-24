@@ -19,15 +19,20 @@
   {%for artesano in artesanos%}
   <tr onclick="window.location='/informacion_artesano/{{artesano.id}}';">
     <td>{{artesano.nombre}}</td>
+    {%if artesano.telefono == ''%}
+    <td>No brinda telefono</td>
+    {%elif artesano.telefono is not none%}
     <td>{{artesano.telefono}}</td>
+    {%endif%}
     <td>{{artesano.comuna}}</td>
     <td>{{artesano.tipo_artesanias}}</td>
     <td>{%for path in artesano.path_images%}
-      <img src="{{path}}" alt="Imagen" width="100" height="100">
+      <img src="{{path}}" alt="Imagen" width="120" height="120">
     {%endfor%}
     </td>
   </tr>
   {%endfor%}
+  
   </table>
 </div>
 <nav class="navigation-bar" aria-label="Page navigation">
@@ -47,7 +52,7 @@
     <li class="page-item">
       {% if next <= page %}
       <a class="page-link" href="/ver_artesanos/{{next}}" aria-label="Next">
-        <span aria-hidden="true">&raquo</span>
+        <span aria-hidden="true">&raquo;</span>
         <span class="sr-only">Next</span>
       </a>
       {% endif %}

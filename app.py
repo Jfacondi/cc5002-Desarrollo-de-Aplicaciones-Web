@@ -56,27 +56,39 @@ def ver_artesanos(page):
 
 @app.route('/informacion_artesano/<int:id>')
 def informacion_artesano(id):
-    data=[]
-    artesano = db.get_artesano(id)
-    id_a , comuna , descripcion , nombre , email , celular = artesano
-    comunas = db.get_comuna_nombre(comuna)[0]
-    tipos = db.get_tipos_artesano(id_a)
-    tipos_artesanias = [db.get_categoria_nombre(tipo[0])[0] for tipo in tipos]
-    fotos= db.get_fotos(id_a)
-    _filenames = [foto[0] for foto in fotos]
-    img_filenames = [f"uploads/{_filename}" for _filename in _filenames]
-    path_images= [url_for('static', filename=img_filename) for img_filename in img_filenames]
-    data.append({
-        "comuna": comunas,
-        "nombre": nombre,
-        "telefono": celular,
-        "tipo_artesanias": ", ".join(tipos_artesanias),
-        "descripcion": descripcion,
-        "email": email,
-        "id": id_a,
-        "path_images": path_images
-    })
-    return render_template('informacion-artesano.html', artesanos=data)
+    ids= db.get_artesano_ids()
+    bandera= False
+    for id_a in ids:
+        if id == id_a[0]:
+            bandera= True
+    if bandera == False:
+        flash('El artesano no existe', 'error')
+        return redirect(url_for('error'))
+    else:
+        data=[]
+        artesano = db.get_artesano(id)
+        id_a , comuna , descripcion , nombre , email , celular = artesano
+        comunas = db.get_comuna_nombre(comuna)[0]
+        tipos = db.get_tipos_artesano(id_a)
+        tipos_artesanias = [db.get_categoria_nombre(tipo[0])[0] for tipo in tipos]
+        fotos= db.get_fotos(id_a)
+        _filenames = [foto[0] for foto in fotos]
+        region = db.get_region_nombre(comuna)[0]
+        region = db.get_region_by_id(region)[0]
+        img_filenames = [f"uploads/{_filename}" for _filename in _filenames]
+        path_images= [url_for('static', filename=img_filename) for img_filename in img_filenames]
+        data.append({
+            "region": region,
+            "comuna": comunas,
+            "nombre": nombre,
+            "telefono": celular,
+            "tipo_artesanias": ", ".join(tipos_artesanias),
+            "descripcion": descripcion,
+            "email": email,
+            "id": id_a,
+            "path_images": path_images
+        })
+        return render_template('informacion-artesano.html', artesanos=data)
 
 
 
@@ -100,7 +112,7 @@ def agregar_artesano():
         foto3 = request.files['foto-3']
         descripcion = request.form['descripcion']
         error = ""
-        if (validate_artesano(nombre,email,telefono,comuna,region,artesania, descripcion)== True) and ((validate_fotos(foto1) == True) or (validate_fotos(foto2) == True) or (validate_fotos(foto3) == True)):
+        if (validate_artesano(nombre,email,telefono,comuna,region,artesania, descripcion)[0]== True) and ((validate_fotos(foto1) == True) or (validate_fotos(foto2) == True) or (validate_fotos(foto3) == True)):
             status, msg = db.registrar_artesano(comuna,descripcion,nombre,email,telefono,artesania)
             id = db.get_artesano_id(nombre)[0]
             if(validate_fotos(foto1) == True):
@@ -110,7 +122,7 @@ def agregar_artesano():
                 img_filename = f"{_filename}.{_extension}"
 
                 foto1.save(os.path.join(app.config['UPLOAD_FOLDER'], img_filename))
-                db.registrar_foto(url_for('static', filename=f"uploads/{img_filename}"),img_filename, id)
+                db.registrar_foto(app.config['UPLOAD_FOLDER'],img_filename, id)
             if(validate_fotos(foto2) == True):
                 _filename = hashlib.sha256(
                     secure_filename(foto2.filename).encode('utf-8')).hexdigest()
@@ -118,20 +130,22 @@ def agregar_artesano():
                 img_filename = f"{_filename}.{_extension}"
 
                 foto2.save(os.path.join(app.config['UPLOAD_FOLDER'], img_filename))
-                db.registrar_foto(url_for('static', filename=f"uploads/{img_filename}"),img_filename, id)
+                db.registrar_foto(app.config['UPLOAD_FOLDER'],img_filename, id)
             if(validate_fotos(foto3) == True):
                 _filename = hashlib.sha256(
                     secure_filename(foto3.filename).encode('utf-8')).hexdigest()
                 _extension = filetype.guess(foto3).extension
                 img_filename = f"{_filename}.{_extension}"
-
                 foto3.save(os.path.join(app.config['UPLOAD_FOLDER'], img_filename))
-                db.registrar_foto(url_for('static', filename=f"uploads/{img_filename}"),img_filename, id)
+                db.registrar_foto(app.config['UPLOAD_FOLDER'],img_filename, id)
             if status:
+                flash('Artesano registrado correctamente', 'success')
                 return redirect(url_for('index'))
             error = msg
         else:
-            error = "Error en los datos ingresados"
+            error = "Error en los datos ingresados "
+            error = error + validate_artesano(nombre,email,telefono,comuna,region,artesania, descripcion)[1]
+            error = error + db.validate_comuna(comuna,region)[1]
         return render_template('agregar-artesano.html', error=error)
             
     else:
@@ -140,7 +154,14 @@ def agregar_artesano():
 @app.route('/exito')
 def exito():
     return render_template('exito.html')
-
+@app.route('/error')
+def error():
+    return render_template('error.html')
+@app.errorhandler(404)
+def page_not_found(e):
+    flash('Error 404', 'error')
+    flash('Pagina no encontrada', 'error')
+    return redirect(url_for('error'))
 if __name__ == '__main__':
     app.run(port=3006, debug=True)
 

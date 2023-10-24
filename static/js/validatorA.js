@@ -250,5 +250,7 @@ const ValidateForm = () => {
 document.getElementById("region").addEventListener("change", updateComunas);
 displayRegion();
 
+
+
 let submitBtn = document.getElementById("submit-button");
 submitBtn.addEventListener("click", ValidateForm);

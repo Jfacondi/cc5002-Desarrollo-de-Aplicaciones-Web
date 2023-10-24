@@ -32,6 +32,19 @@ def get_rows_count():
     cursor.execute("SELECT COUNT(*) FROM artesano;")
     count = cursor.fetchone()
     return count[0]
+def get_region_nombre(comuna):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT region_id FROM comuna WHERE id=%s;", (comuna,))
+    region = cursor.fetchone()
+    return region
+
+def get_region_by_id(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nombre FROM region WHERE id=%s;", (id,))
+    region = cursor.fetchone()
+    return region
 
 def get_tipos_artesano(id):
     conn = get_conn()
@@ -79,8 +92,21 @@ def create_artesano(comuna,descripcion,nombre,email,celular):
     cursor.execute("INSERT INTO artesano (comuna_id, descripcion_artesania, nombre, email, celular) VALUES (%s, %s, %s, %s, %s);", (comuna, descripcion, nombre, email, celular,))
     conn.commit()
 
-
-
+def validate_comuna(value, value2):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nombre FROM comuna WHERE id=%s AND region_id=%s;", (value, value2,))
+    nombre = cursor.fetchone()
+    if nombre is None:
+        return False, "Comuna no corresponde a la region"
+    else:
+        return True, ""
+def get_artesano_ids():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM artesano;")
+    id = cursor.fetchall()
+    return id
 def create_artesano_tipo(nombre,tipos):
     conn = get_conn()
     cursor = conn.cursor()

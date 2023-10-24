@@ -5,15 +5,11 @@
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
-    <div class="succes">
+    <div class="error">
         {{ message }}
     </div>
     {% endfor %}
     {% endif %}
     {% endwith %}
-    <h1>Juegos Panamericanos y Parapanamericanos 2023</h1>
-    <p>Los Juegos Panamericanos son el mayor evento
-        deportivo internacional multidisciplinario 
-        en el que participan atletas de las Américas.</p>
 </div>
 {%endblock%}
