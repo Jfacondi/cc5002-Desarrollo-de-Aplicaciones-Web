@@ -1,3 +1,5 @@
+T2
+
 Se implemento todo lo solicitado
 Se hizo uso de redirect y flash para el aviso de un registro exitoso
 Se implemento manejo basico de errores tanto al momento de intentar ver la informacion artesano
@@ -13,3 +15,10 @@ nuevamente al formulario mostrando los errores correspondientes.
 
 ## Hay varias librerias que se descargaron sin querer y no se usaron, pero no se eliminaron por si acaso.
 ## Tambien notar que el numero es formato +(xxx)xxxxxxxxx
+
+T3
+
+Se implemento todo lo solicitado
+Se hizo uso de ajax para los graficos, ademas de la libreria highcharts
+se implemento el mismo manejo de errores usado para los artesanos en tablas/informacion/registro de hinchas 
+Se implementa en la navbar la seccion de estadisticas que permite ver los graficos, ademas de un boton para alternar los mismos

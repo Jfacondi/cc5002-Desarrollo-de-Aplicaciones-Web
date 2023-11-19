@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Juegos Panamericanos{% endblock %}
+{% block css%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/graficos.css')}}">
+<script src="https://code.highcharts.com/highcharts.js"> </script>
+
+{% endblock %}
+{%block content%}
+<div class="stats-container">
+    <figure class="highcharts-figure">
+        <div id="container">
+        </div>
+        <div id="container2" style="overflow: hidden; display: none;">
+        </div>
+    </figure>
+</div>
+<div class="buttons-container">
+    <input class="button-74" id="btn1" type="button" value="Ver Artesanos" onclick="toggle1()">
+</div>
+{%endblock%}
+{% block js %}
+<script src="{{url_for('static', filename='js/estadisticas.js')}}"></script>
+{% endblock %}

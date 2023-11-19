@@ -1,47 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juegos Panamericanos</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/fotos.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
-
-</head>
-<body>
-    <div class="main">
-        <nav>
-            <div class="container">   
-                <a href="../index.html"><img src="../img/logo.png" alt="banner"></a>
-            </div>
-            <div class="nav-links">
-                    <ul>
-                        <li><a href="../html/ver-hinchas.html">Ver hinchas</a></li>
-                        <li><a href="../html/ver-artesanos.html">Ver artesanos</a></li>
-                        <li><a href="../html/agregar-hincha.html">Agregar hincha</a></li>
-                        <li><a href="../html/agregar-artesano.html">Agregar artesano</a></li>
-                    </ul>
-            
-            </div>
-        </nav>
-        <div class="centered">
-            <h1 class="centered">Hincha Luis Fonsi</h1>
-        </div>
-        <div class="info">
-            <div class="left-info">
-                <p class="text-large">Comuna: Colina</p>
-                <p class="text-large">Deportes: Skateboarding, Judo, Taekwondo</p>
-                <p class="text-large">Modo Transporte: Particular</p>
-                <p class="text-large">Numero celular: +(569)9082098</p>
-              </div>
-        </div>
-        <div class="centered">
-            <button type="button" onclick="location.href='ver-hinchas.html'">Volver a Hinchas</button>
-        </div>
-    </div>
-
-</body>
-</html>
+{%extends 'base.html'%}
+{%block title%}Juegos Panamericanos{%endblock%}
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/fotos.css')}}">
+{% endblock %}
+{%block content%}
+{%for hincha in hinchas%}
+<div class="centered">
+    <h1 class="centered">Hincha {{hincha.nombre}}</h1>
+</div>
+<div class="info">
+    <div class="left-info">
+        <p class="text-large">Region: {{hincha.region}}</p>
+        <p class="text-large">Comuna: {{hincha.comuna}}</p>
+        <p class="text-large">Tipo: {{hincha.sports}}</p>
+        {%if hincha.telefono == ''%}
+        <p class="text-large">Telefono: No brinda telefono</p>
+        {%elif hincha.telefono is not none%}
+        <p class="text-large">Telefono: {{hincha.telefono}}</p>
+        {%endif%}
+        <p class="text-large">Correo: {{hincha.email}}</p>
+        {%if hincha.descripcion == ''%}
+        <p class="text-large">Descripcion: No brinda comentario</p>
+        {%elif hincha.descripcion is not none%}
+        <p class="text-large">Comentario: {{hincha.descripcion}}</p>
+        {%endif%}
+      </div>
+</div>
+<div class="centered">
+    <button type="button" onclick="window.location='/ver-hinchas';">Volver a Hinchas</button>
+</div>
+{%endfor%}
+{%endblock%}

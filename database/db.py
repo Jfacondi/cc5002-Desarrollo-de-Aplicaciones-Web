@@ -45,6 +45,12 @@ def get_region_by_id(id):
     cursor.execute("SELECT nombre FROM region WHERE id=%s;", (id,))
     region = cursor.fetchone()
     return region
+def get_tipos():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nombre FROM tipo_artesania;")
+    tipos = cursor.fetchall()
+    return tipos
 
 def get_tipos_artesano(id):
     conn = get_conn()
@@ -128,3 +134,91 @@ def registrar_artesano(comuna,descripcion,nombre,email,celular,tipos):
     create_artesano(comuna,descripcion,nombre,email,celular)
     create_artesano_tipo(nombre,tipos)
     return True, "artesano registrado exitosamente"
+# SEGUNDA PARTE
+def get_sports():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nombre FROM deporte;")
+    sports = cursor.fetchall()
+    return sports
+def get_hincha_ids():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM hincha;")
+    id = cursor.fetchall()
+    return id
+def get_hincha_rows_count():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM hincha;")
+    count = cursor.fetchone()
+    return count[0]
+def get_hinchas(page_size):
+    conn=get_conn()
+    cursor=conn.cursor()
+    cursor.execute("SELECT id, comuna_id, modo_transporte, nombre, email, celular, comentarios FROM hincha ORDER BY id DESC LIMIT %s, 5;", (page_size,))
+    hinchas=cursor.fetchall()
+    return hinchas
+def get_hincha_sports(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT deporte_id FROM hincha_deporte WHERE hincha_id=%s;", (id,))
+    tipos = cursor.fetchall()
+    return tipos
+def get_hincha(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, comuna_id, modo_transporte, nombre, email, celular, comentarios FROM hincha WHERE id=%s;", (id,))
+    hincha = cursor.fetchone()
+    return hincha
+
+def get_hincha_id(nombre):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM hincha WHERE nombre=%s;", (nombre,))
+    id = cursor.fetchone()
+    return id
+def get_hincha_sports(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT deporte_id FROM hincha_deporte WHERE hincha_id=%s;", (id,))
+    tipos = cursor.fetchall()
+    return tipos
+def get_sport_nombre(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nombre FROM deporte WHERE id=%s;", (id,))
+    nombre = cursor.fetchone()
+    return nombre
+def create_hincha(comuna, transporte, nombre, email, celular, comentario):
+    conn = get_conn()
+    cursor = conn.cursor()
+    id = get_hincha_id(nombre)
+    cursor.execute("INSERT INTO hincha (comuna_id, modo_transporte, nombre, email, celular, comentarios) VALUES (%s, %s, %s, %s, %s, %s);", (comuna, transporte, nombre, email, celular, comentario,))
+    conn.commit()
+def create_hincha_deportes(nombre,tipos):
+    conn = get_conn()
+    cursor = conn.cursor()
+    id= get_hincha_id(nombre)
+    for tipo in tipos:
+        cursor.execute("INSERT INTO hincha_deporte (hincha_id, deporte_id) VALUES (%s, %s);" , (id,tipo))
+    conn.commit()
+def get_estadisticas_hinchas(id):
+    conn= get_conn()
+    cursor= conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM hincha_deporte WHERE deporte_id=%s;", (id,))
+    count=cursor.fetchone()
+    return count
+def get_estadisticas_artesanos(id):
+    conn= get_conn()
+    cursor= conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM artesano_tipo WHERE tipo_artesania_id=%s;", (id,))
+    count=cursor.fetchone()
+    return count
+
+def registrar_hincha(comuna, transporte, nombre, email, celular, comentario, tipos):
+    if get_hincha_id(nombre) is not None:
+        return False, "El hincha ya existe!!!!!"
+    create_hincha(comuna, transporte, nombre, email, celular, comentario)
+    create_hincha_deportes(nombre, tipos)
+    return  True, "hincha registrado exitosamente"

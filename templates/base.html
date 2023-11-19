@@ -25,6 +25,7 @@
                         <li><a href="{{url_for('ver_artesanos')}}">Ver artesanos</a></li>
                         <li><a href="{{url_for('agregar_hincha')}}">Agregar hincha</a></li>
                         <li><a href="{{url_for('agregar_artesano')}}">Agregar artesano</a></li>
+                        <li><a href="{{url_for('estadisticas')}}">Estadisticas</a></li>
                     </ul>
             
             </div>
@@ -33,6 +34,7 @@
             {% block content %}{% endblock %} {% block javascript %}{% endblock %}
           </section>
     </div>
+    {% block js %}{% endblock %}
 </body>
-{% block js %}{% endblock %}
+
 </html>

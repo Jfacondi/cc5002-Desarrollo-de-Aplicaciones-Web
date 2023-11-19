@@ -121,7 +121,7 @@ const ValidateEmail = (email) => {
 	if (!email) {
 		return false;
 	}
-	const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	const reg = /^[\w.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 	if (!email.match(reg)) {
 		return false;
 	}

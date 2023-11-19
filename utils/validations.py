@@ -45,7 +45,7 @@ def validate_email(value):
         return False
     if len(value) > 30:
         return False
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+    if not re.match(r"^[\w.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", value):
         return False
     return True
 
@@ -59,12 +59,16 @@ def validate_telefono(value):
     return True
 
 def validate_comuna(value, value2):
+    if value == "No":
+        return False
     if len(value) == 0:
         return False
     if int(value) < 10101 or int(value) > 130606:
         return False
     return True
 def validate_region(value):
+    if value == "No":
+        return False
     if len(value) == 0:
         return False
     if int(value) < 1 or int(value) > 16:
@@ -75,7 +79,21 @@ def validate_descripcion(value):
     if len(value) > 80:
         return False
     return True
-
+def validate_transporte(value):
+    if value == "No":
+        return False
+    if value=="particular" or value=="locomoción pública":
+        return True
+    return False 
+def validate_deportes(value):
+    if len(value) == 0:
+        return False
+    if len(value) > 3:
+        return False
+    for tipo in value:
+        if int(tipo) > 60 or int(tipo) < 1:
+            return False
+    return True
 def validate_artesano(nombre,email,telefono,comuna,region,artesania,descripcion):
     msg=""
     if not validate_nombre(nombre):
@@ -100,3 +118,26 @@ def validate_fotos(foto):
     if validate_conf_img(foto):
         return True
     return False
+
+def validate_hincha(nombre, email , telefono, transporte, comuna, region, sports, descripcion):
+    msg=""
+    if not validate_nombre(nombre):
+        msg=msg+"Nombre invalido "
+    if not validate_email(email):
+        msg=msg+"Email invalido "
+    if not validate_telefono(telefono):
+        msg=msg+"Telefono invalido "
+    if not validate_transporte(transporte):
+        msg=msg+"Transporte invalido "
+    if not validate_comuna(comuna,region):
+        msg=msg+"Comuna invalida "
+    if not validate_region(region):
+        msg=msg+"Region invalida "
+    if not validate_deportes(sports):
+        msg=msg+"Deportes invalidos"
+    if not validate_descripcion(descripcion):
+        msg=msg+"Descripcion invalida "
+    if msg=="":
+        return True, msg       
+    else:
+        return False, msg

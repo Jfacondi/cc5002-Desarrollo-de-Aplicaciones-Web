@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_cors import cross_origin
 from utils.validations import *
 from database import db
 import math
@@ -20,9 +21,33 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def index():
     return render_template("index.html")
 
-@app.route("/ver-hinchas")
-def ver_hinchas():
-    return render_template("ver-hinchas.html")
+
+
+@app.route("/ver-hinchas", defaults={'page': 1})
+@app.route("/ver-hinchas/<int:page>")
+def ver_hinchas(page):
+    total_rows = db.get_hincha_rows_count()
+    page_size = 5
+    total_page = math.ceil(total_rows / page_size)
+    next = page + 1
+    prev = page - 1
+    data=[]
+    for hincha in db.get_hinchas((page-1)*page_size):
+        id_h , comuna , transporte , nombre , email , celular , descripcion = hincha
+        comunas = db.get_comuna_nombre(comuna)[0]
+        sports = db.get_hincha_sports(id_h)
+        sports_hincha = [db.get_sport_nombre(sport[0])[0] for sport in sports]
+        data.append({
+            "comuna": comunas,
+            "nombre": nombre,
+            "telefono": celular,
+            "transporte": transporte,
+            "descripcion": descripcion,
+            "email": email,
+            "id": id_h,
+            "sports": ", ".join(sports_hincha),
+        })
+    return render_template("ver-hinchas.html", hinchas=data, page=total_page, next=next, prev=prev)
 
 @app.route('/ver_artesanos', defaults={'page': 1})
 @app.route('/ver_artesanos/<int:page>')
@@ -53,6 +78,39 @@ def ver_artesanos(page):
             "path_images": path_images
         })
     return render_template('ver-artesanos.html', artesanos=data, page=total_page, next=next, prev=prev)
+
+@app.route('/informacion_hincha/<int:id>')
+def informacion_hincha(id):
+    ids= db.get_hincha_ids()
+    bandera= False
+    for id_a in ids:
+        if id == id_a[0]:
+            bandera= True
+    if bandera == False:
+        flash('El Hincha no existe', 'error')
+        return redirect(url_for('error'))
+    else:
+        data=[]
+        hincha = db.get_hincha(id)
+        id_h , comuna , transporte , nombre , email , celular , descripcion = hincha
+        comunas = db.get_comuna_nombre(comuna)[0]
+        sports = db.get_hincha_sports(id_h)
+        sports_hincha = [db.get_sport_nombre(sport[0])[0] for sport in sports]
+        region_id= db.get_region_nombre(comuna)[0]
+        region = db.get_region_by_id(region_id)[0]
+        data.append({
+            "region": region,
+            "comuna": comunas,
+            "nombre": nombre,
+            "telefono": celular,
+            "transporte": transporte,
+            "descripcion": descripcion,
+            "email": email,
+            "id": id_h,
+            "sports": ", ".join(sports_hincha),
+        })
+        return render_template('informacion-hinchas.html', hinchas=data)
+
 
 @app.route('/informacion_artesano/<int:id>')
 def informacion_artesano(id):
@@ -94,6 +152,35 @@ def informacion_artesano(id):
 
 @app.route('/agregar_hincha', methods=['GET','POST'])
 def agregar_hincha():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        transporte = request.form.get('transporte')
+        comuna = request.form.get('comuna')
+        region = request.form.get('region')
+        sports = request.form.getlist('sports')
+        descripcion = request.form['descripcion']
+        if transporte == None:
+            transporte = "No"
+        if comuna == None:
+            comuna = "No"
+        if region == None:
+            region = "No"
+        error = ""
+        if(validate_hincha(nombre, email, telefono, transporte, comuna, region, sports, descripcion)[0]== True):
+            status, msg = db.registrar_hincha(comuna, transporte, nombre, email, telefono, descripcion, sports)
+            if status:
+                flash('Hincha registrado correctamente', 'success')
+                return redirect(url_for('index'))
+            error = msg
+        else:
+            error = "Error en los datos ingresados "
+            error = error + validate_hincha(nombre, email, telefono, transporte, comuna, region, sports, descripcion)[1]
+            error = error + db.validate_comuna(comuna,region)[1]
+        return render_template('agregar-hincha.html', error=error)
+
+
     return render_template('agregar-hincha.html')
 
 
@@ -104,13 +191,17 @@ def agregar_artesano():
         nombre = request.form['nombre']
         email = request.form['email']
         telefono = request.form['telefono']
-        comuna = request.form['comuna']
-        region = request.form['region']
+        comuna = request.form.get('comuna')
+        region = request.form.get('region')
         artesania = request.form.getlist('sports')
         foto1 = request.files['foto-1']
         foto2 = request.files['foto-2']
         foto3 = request.files['foto-3']
         descripcion = request.form['descripcion']
+        if comuna == None:
+            comuna = "No"
+        if region == None:
+            region = "No"
         error = ""
         if (validate_artesano(nombre,email,telefono,comuna,region,artesania, descripcion)[0]== True) and ((validate_fotos(foto1) == True) or (validate_fotos(foto2) == True) or (validate_fotos(foto3) == True)):
             status, msg = db.registrar_artesano(comuna,descripcion,nombre,email,telefono,artesania)
@@ -150,6 +241,30 @@ def agregar_artesano():
             
     else:
         return render_template('agregar-artesano.html')
+
+#rutas estadisticas API
+@app.route("/estadisticas")
+def estadisticas():
+    return render_template("estadisticas.html")
+
+@app.route("/get_estadisticas", methods=["GET"])
+@cross_origin(origin="localhost", supports_credentials=True)
+def get_estadisticas():
+    hinchas = [{
+        "tipo": db.get_sport_nombre(id)[0],
+        "cantidad": db.get_estadisticas_hinchas(id)[0]
+    } for id, tipo in db.get_sports() if db.get_estadisticas_hinchas(id)[0] != 0]
+
+    artesanos = [{
+        "tipo": db.get_categoria_nombre(id)[0],
+        "cantidad": db.get_estadisticas_artesanos(id)[0]
+    } for id, tipo in db.get_tipos() if db.get_estadisticas_artesanos(id)[0] != 0]
+    
+    return jsonify({
+        "hinchas": hinchas,
+        "artesanos": artesanos
+    })
+
 
 @app.route('/exito')
 def exito():

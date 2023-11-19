@@ -4,28 +4,33 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/form.css')}}">
 {% endblock %}
 {%block content%}
-<form>
+{% if error %}
+<div class="error-message">
+  {{ error }}
+</div>
+{% endif %}
+<div class="container-form">
+<form class="forms" id="hincha-form" action="/agregar_hincha" method="POST" enctype="multipart/form-data">
   <div class="form-group" id="form-group">
     <h2>Registrar hincha</h2>
-
       <label for="nombre">Nombre</label>
-      <input type="text" id="nombre" placeholder="Ingrese su nombre">
+      <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre">
       <label for="email">Email Contacto</label>
-      <input type="text" id="email" placeholder="Ingrese su email">
+      <input type="text" id="email" name="email" placeholder="Ingrese su email">
       <label for="telefono">Teléfono</label>
-      <input type="text" id="telefono" placeholder="Ingrese su teléfono">
+      <input type="text" id="telefono" name="telefono" placeholder="Ingrese su teléfono">
       <label for="transporte">Modo de transporte</label>
-      <select name="Transporte" id="transporte">
-          <option value="" selected disabled hidden>Seleccione modo de transporte</option>
-          <option value="particular">particular</option>
-          <option value="locomoción pública">locomoción pública</option>
-      </select>
+      <select id="transporte" name="transporte" required>
+        <option value="" selected disabled hidden>Seleccione modo de transporte</option>
+        <option value="particular">particular</option>
+        <option value="locomoción pública">locomoción pública</option>
+    </select>
       <label for="region">Región</label>
-      <select id="region" required>
+      <select id="region" name="region" required>
         <option value="" selected disabled hidden>Seleccione región</option>
       </select>
       <label for="comuna">Comuna</label>
-      <select id="comuna" required>
+      <select id="comuna" name="comuna" required>
         <option value="" selected disabled hidden>Ingrese Comuna</option>
       </select>
 
@@ -93,26 +98,22 @@
         <option value="60">Vóleibol playa</option>                  
     </select>
       <label for="descripcion">Comentarios Adicionales</label>
-      <input id="descripcion" type="text" maxlength="80" placeholder="Ingrese su Comentarios Adicional">
+      <input id="descripcion" name="descripcion" type="text" maxlength="80" placeholder="Ingrese su Comentarios Adicional">
       <button id="submit-button" type="button">Agregar hincha</button>
   </div>
+  <div id="val-box" hidden>
+    <ul id="val-msg"></ul>
+    <ul id="val-list"></ul>
+    </div>
+    <div id="confirm-box" class="static-centered" hidden>
+    <h1 class="centered">¿Confirma que desea agregar este Hincha?</h1>
+    <div class="centered">
+      <button id="confirm-button" type="submit">Sí, confirmo</button>
+      <button id="deny-button" type="button">No, quiero volver al formulario.</button>
+    </div>
+    </div>
 </form>
-<div id="val-box" hidden>
-<ul id="val-msg"></ul>
-<ul id="val-list"></ul>
-</div>
-<div id="confirm-box" class="static-centered" hidden>
-<h1 class="centered">¿Confirma que desea agregar este Hincha?</h1>
-<div class="centered">
-  <button id="confirm-button" type="button">Sí, confirmo</button>
-  <button id="deny-button" type="button">No, quiero volver al formulario.</button>
-</div>
-</div>
-<div id="return-box" class="static-centered" hidden>
-<h1 class="centered">Hemos recibido la información de su Hincha. Muchas gracias.</h1>
-<div class="centered">
-  <a href="{{url_for('index')}}">Volver al Inicio</a>
-</div>
+
 </div>
 {% endblock %}
 {% block javascript %}
